@@ -17,4 +17,14 @@ spec:
       containers:
         - image: bootdotdev/synergychat-web:latest
           name: synergychat-web
-          resources: {}
+          env:
+            - name: WEB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: synergychat-web-configmap
+                  key: WEB_PORT
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: synergychat-web-configmap
+                  key: API_URL

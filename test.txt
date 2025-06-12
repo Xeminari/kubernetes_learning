@@ -1,79 +1,89 @@
-[?25l[?2004h [0D[2K[?2004l[?25h[?1002l[?1003l[?1006l╭──────────────────────────────────────────────────────────────────────────╮
-│ GET http://127.0.0.1:8001/api/v1/namespaces/default/services/api-service │
-╰┬─────────────────────────────────────────────────────────────────────────╯
+[?25l[?2004h [0D[2K[?2004l[?25h[?1002l[?1003l[?1006l╭──────────────────────────────────────────────────────────────────────────────────────────────╮
+│ GET http://127.0.0.1:8001/apis/networking.k8s.io/v1/namespaces/default/ingresses/app-ingress │
+╰┬─────────────────────────────────────────────────────────────────────────────────────────────╯
  ├─  ?  Expecting status code: 200
- ├─  ?  Expecting JSON at .kind to be equal to Service
- ├─  ?  Expecting JSON at .spec.type to be equal to ClusterIP
+ ├─  ?  Expecting body to contain: synchatapi.internal
+ ├─  ?  Expecting body to contain: synchat.internal
   Response Status Code: 200
   Response Body: 
 {
-  "apiVersion": "v1",
-  "kind": "Service",
+  "apiVersion": "networking.k8s.io/v1",
+  "kind": "Ingress",
   "metadata": {
     "annotations": {
-      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"api-service\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"port\":80,\"protocol\":\"TCP\",\"targetPort\":8080}],\"selector\":{\"app\":\"synergychat-api\"}}}\n"
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.k8s.io/v1\",\"kind\":\"Ingress\",\"metadata\":{\"annotations\":{\"nginx.ingress.kubernetes.io/rewrite-target\":\"/\"},\"name\":\"app-ingress\",\"namespace\":\"default\"},\"spec\":{\"rules\":[{\"host\":\"synchat.internal\",\"http\":{\"paths\":[{\"backend\":{\"service\":{\"name\":\"web-service\",\"port\":{\"number\":80}}},\"path\":\"/\",\"pathType\":\"Prefix\"}]}},{\"host\":\"synchatapi.internal\",\"http\":{\"paths\":[{\"backend\":{\"service\":{\"name\":\"api-service\",\"port\":{\"number\":80}}},\"path\":\"/\",\"pathType\":\"Prefix\"}]}}]}}\n",
+      "nginx.ingress.kubernetes.io/rewrite-target": "/"
     },
-    "creationTimestamp": "2025-06-12T22:40:43Z",
+    "creationTimestamp": "2025-06-12T22:50:04Z",
+    "generation": 1,
     "managedFields": [
       {
-        "apiVersion": "v1",
+        "apiVersion": "networking.k8s.io/v1",
         "fieldsType": "FieldsV1",
         "fieldsV1": {
           "f:metadata": {
             "f:annotations": {
               ".": {},
-              "f:kubectl.kubernetes.io/last-applied-configuration": {}
+              "f:kubectl.kubernetes.io/last-applied-configuration": {},
+              "f:nginx.ingress.kubernetes.io/rewrite-target": {}
             }
           },
           "f:spec": {
-            "f:externalTrafficPolicy": {},
-            "f:internalTrafficPolicy": {},
-            "f:ports": {
-              ".": {},
-              "k:{\"port\":80,\"protocol\":\"TCP\"}": {
-                ".": {},
-                "f:port": {},
-                "f:protocol": {},
-                "f:targetPort": {}
-              }
-            },
-            "f:selector": {},
-            "f:sessionAffinity": {},
-            "f:type": {}
+            "f:rules": {}
           }
         },
         "manager": "kubectl-client-side-apply",
         "operation": "Update",
-        "time": "2025-06-12T22:45:28Z"
+        "time": "2025-06-12T22:50:04Z"
       }
     ],
-    "name": "api-service",
+    "name": "app-ingress",
     "namespace": "default",
-    "resourceVersion": "1967",
-    "uid": "560dfed8-9b7f-4b30-abbf-7136244bbd67"
+    "resourceVersion": "2310",
+    "uid": "cf4e26e0-b201-463f-bbc6-36c1424c2157"
   },
   "spec": {
-    "clusterIP": "10.108.147.30",
-    "clusterIPs": [
-      "10.108.147.30"
-    ],
-    "internalTrafficPolicy": "Cluster",
-    "ipFamilies": [
-      "IPv4"
-    ],
-    "ipFamilyPolicy": "SingleStack",
-    "ports": [
+    "ingressClassName": "nginx",
+    "rules": [
       {
-        "port": 80,
-        "protocol": "TCP",
-        "targetPort": 8080
+        "host": "synchat.internal",
+        "http": {
+          "paths": [
+            {
+              "backend": {
+                "service": {
+                  "name": "web-service",
+                  "port": {
+                    "number": 80
+                  }
+                }
+              },
+              "path": "/",
+              "pathType": "Prefix"
+            }
+          ]
+        }
+      },
+      {
+        "host": "synchatapi.internal",
+        "http": {
+          "paths": [
+            {
+              "backend": {
+                "service": {
+                  "name": "api-service",
+                  "port": {
+                    "number": 80
+                  }
+                }
+              },
+              "path": "/",
+              "pathType": "Prefix"
+            }
+          ]
+        }
       }
-    ],
-    "selector": {
-      "app": "synergychat-api"
-    },
-    "sessionAffinity": "None",
-    "type": "ClusterIP"
+    ]
   },
   "status": {
     "loadBalancer": {}
